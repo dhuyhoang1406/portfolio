@@ -1,0 +1,12 @@
+export type AppId = "About Me" | "Projects" | "Skills" | "Resume" | "Contact";
+export const apps: { id: AppId; short: string; subtitle: string }[] = [
+  { id: "About Me", short: "About me", subtitle: "A little introduction" },
+  {
+    id: "Projects",
+    short: "Projects",
+    subtitle: "Selected work & experiments",
+  },
+  { id: "Skills", short: "Toolbox", subtitle: "Tools behind the work" },
+  { id: "Resume", short: "Resume", subtitle: "Experience & education" },
+  { id: "Contact", short: "Contact", subtitle: "Start a conversation" },
+];
