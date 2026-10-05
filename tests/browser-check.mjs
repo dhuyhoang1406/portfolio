@@ -9,7 +9,7 @@ const browser = await chromium.launch({
     "--enable-unsafe-swiftshader",
   ],
 });
-const base = process.env.BASE_URL || "http://localhost:5173";
+const base = (process.env.BASE_URL || "http://localhost:5173").replace(/\/$/, "");
 const errors = [];
 const page = await browser.newPage({ viewport: { width: 1440, height: 1000 } });
 page.on("pageerror", (e) => errors.push(e.message));
@@ -22,7 +22,7 @@ await page.addInitScript(() => {
     return original.apply(this, args);
   };
 });
-await page.goto(base);
+await page.goto(`${base}/`);
 await expect(page.locator("canvas")).toBeVisible();
 await page.waitForTimeout(2500);
 await expect(page.getByRole("button", { name: "Enter computer" })).toBeEnabled({
@@ -165,7 +165,7 @@ await page.getByRole("button", { name: "Close Skills" }).click();
 await page.getByRole("button", { name: "Open Resume" }).click();
 await expect(
   page.getByRole("link", { name: "Download resume" }),
-).toHaveAttribute("href", "/documents/resume.pdf");
+).toHaveAttribute("href", new URL(`${base}/documents/resume.pdf`).pathname);
 const pdf = await page.request.get(`${base}/documents/resume.pdf`);
 expect(pdf.status()).toBe(200);
 expect((await pdf.body()).subarray(0, 4).toString()).toBe("%PDF");
@@ -211,7 +211,7 @@ const mobile = await browser.newPage({
 });
 const requests = [];
 mobile.on("request", (r) => requests.push(r.url()));
-await mobile.goto(base);
+await mobile.goto(`${base}/`);
 await mobile.getByRole("button", { name: "Open Projects" }).click();
 await expect(
   mobile.getByRole("heading", { name: "Things I've built" }),
@@ -228,7 +228,7 @@ await mobile.screenshot({ path: "/tmp/hoang-mobile-midnight.png" });
 
 const fail = await browser.newPage({ viewport: { width: 1280, height: 900 } });
 await fail.route("**/low_poly_room.glb", (route) => route.abort());
-await fail.goto(base);
+await fail.goto(`${base}/`);
 await expect(
   fail.getByText("The 3D room is unavailable.", { exact: false }),
 ).toBeVisible();
@@ -243,14 +243,14 @@ await noGl.addInitScript(() => {
     return get.call(this, type, ...args);
   };
 });
-await noGl.goto(base);
+await noGl.goto(`${base}/`);
 await expect(noGl.getByRole("heading", { name: /Dang Huy/ })).toBeVisible();
 expect(noGlRequests.some((u) => u.endsWith(".glb"))).toBe(false);
 const reduced = await browser.newPage({
   viewport: { width: 1440, height: 1000 },
   reducedMotion: "reduce",
 });
-await reduced.goto(base);
+await reduced.goto(`${base}/`);
 await expect(reduced.locator("canvas")).toBeVisible();
 await expect(
   reduced.getByRole("button", { name: "Enter computer" }),
@@ -274,7 +274,7 @@ await loading.route("**/low_poly_room.glb", async (route) => {
   await loadGate;
   await route.continue();
 });
-await loading.goto(base);
+await loading.goto(`${base}/`);
 const boot = loading.getByRole("status", { name: "Loading workspace" });
 await expect(boot).toBeVisible();
 await expect(boot).toHaveCSS("background-color", "rgb(5, 5, 5)");

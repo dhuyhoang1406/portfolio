@@ -9,7 +9,7 @@ const browser = await chromium.launch({
     "--enable-unsafe-swiftshader",
   ],
 });
-const base = process.env.BASE_URL || "http://localhost:5173";
+const base = (process.env.BASE_URL || "http://localhost:5173").replace(/\/$/, "");
 const page = await browser.newPage({
   viewport: { width: 1860, height: 931 },
   reducedMotion: "reduce",
@@ -57,7 +57,7 @@ async function verify(label) {
   await expect.poll(top).toBe(0);
 }
 try {
-  await page.goto(base);
+  await page.goto(`${base}/`);
   await expect(
     page.getByRole("button", { name: "Enter computer" }),
   ).toBeEnabled({ timeout: 30000 });
