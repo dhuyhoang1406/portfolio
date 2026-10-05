@@ -115,6 +115,6 @@ Visually inspected desktop room, focused monitor, full-screen 2D and a 390×844 
 
 ## GitHub Pages deployment
 
-Pushes to `gh-pages` run `.github/workflows/deploy.yml`: install locked dependencies, lint, build, and deploy `dist`. Repository Settings → Pages → Source must be **GitHub Actions**. The production base is `/huyhoang.github.io/`; local development stays at `/`. Source `index.html` requires Vite and must not be served directly by Pages.
+Pushes to `gh-pages` run `.github/workflows/deploy.yml`: install locked dependencies, lint, build, and deploy `dist`. Repository Settings → Pages → Source must be **GitHub Actions**. The production base is `/portfolio/`; local development stays at `/`. Source `index.html` requires Vite and must not be served directly by Pages.
 
-To check the production build locally, run `npm run build` and `npm run preview`, then open `http://localhost:4173/huyhoang.github.io/`. Browser checks accept `BASE_URL=http://localhost:4173/huyhoang.github.io`.
+To check the production build locally, run `npm run build` and `npm run preview`, then open `http://localhost:4173/portfolio/`. Browser checks accept `BASE_URL=http://localhost:4173/portfolio`.
