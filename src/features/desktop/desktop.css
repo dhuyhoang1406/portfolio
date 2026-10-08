@@ -1567,20 +1567,6 @@
   color: var(--desk-muted);
   margin-top: 4px;
 }
-.local-track {
-  display: inline-block;
-  padding: 10px 12px;
-  border: 1px dashed var(--desk-muted);
-  border-radius: 7px;
-  cursor: pointer;
-  font-size: 11px;
-}
-.local-track input {
-  display: block;
-  max-width: 100%;
-  margin-top: 8px;
-  font-size: 10px;
-}
 .sr-only {
   position: absolute;
   width: 1px;

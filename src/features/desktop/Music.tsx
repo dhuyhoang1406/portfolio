@@ -1,21 +1,12 @@
 import { useEffect, useRef, useState } from "react";
-const tracks = [
-  {
-    name: "Window light",
-    mood: "Soft keys / a slow afternoon",
-    file: "window-light.wav",
-  },
-  {
-    name: "After hours",
-    mood: "Warm synths / a quiet workspace",
-    file: "after-hours.wav",
-  },
-];
+import AppIcon from "./AppIcon";
+import { musicTracks as tracks } from "../../data/music";
 function time(value: number) {
   return `${Math.floor(value / 60)}:${String(Math.floor(value % 60)).padStart(2, "0")}`;
 }
 export default function Music() {
   const audio = useRef<HTMLAudioElement>(null);
+  const fileInput = useRef<HTMLInputElement>(null);
   const localUrl = useRef<string | null>(null);
   const [index, setIndex] = useState(0);
   const [local, setLocal] = useState<{ name: string; url: string } | null>(
@@ -63,25 +54,25 @@ export default function Music() {
   }
   return (
     <div className="music-app">
-      <span className="eyebrow">WORKSPACE RADIO / ORIGINAL AMBIENT</span>
+      <span className="eyebrow">HOANG MEDIA PLAYER / MUSIC LIBRARY</span>
       <div className={`record-scene ${playing ? "is-playing" : ""}`}>
         <div className="record">
           <div className="record-label">
-            h.<small>WORKSPACE RADIO</small>
+            h.<small>HOANG PLAYER</small>
           </div>
         </div>
         <span className="record-caption">
-          SIDE A<br />
+          MY PLAYLIST
+          <br />
           SLOW DOWN. STAY A WHILE.
         </span>
       </div>
       <h2>{local?.name ?? tracks[index].name}</h2>
-      <p>{local ? "Your local soundtrack" : tracks[index].mood}</p>
+      <p>{local ? "Your local soundtrack" : tracks[index].artist}</p>
       <audio
         ref={audio}
         src={src}
         preload="metadata"
-        loop={!local}
         onPlay={() => setPlaying(true)}
         onPause={() => setPlaying(false)}
         onTimeUpdate={(e) => setPosition(e.currentTarget.currentTime)}
@@ -165,15 +156,35 @@ export default function Music() {
             <span>0{i + 1}</span>
             <strong>
               {t.name}
-              <small>{t.mood}</small>
+              <small>{t.artist}</small>
             </strong>
             <span>{!local && index === i ? "●" : "↗"}</span>
           </button>
         ))}
       </div>
-      <label className="local-track">
-        ＋ Choose your own audio
+      <div className="local-track">
+        <span className="local-track-icon">
+          <AppIcon id="Music" />
+        </span>
+        <div className="local-track-copy">
+          <strong>
+            {local ? "Your audio is ready" : "Bring your own soundtrack"}
+          </strong>
+          <span title={local?.name} aria-live="polite">
+            {local?.name ?? "Choose an audio file from your device"}
+          </span>
+        </div>
+        <button
+          type="button"
+          className="local-track-button"
+          onClick={() => fileInput.current?.click()}
+        >
+          {local ? "Change file" : "Choose audio"}{" "}
+          <span aria-hidden="true">＋</span>
+        </button>
         <input
+          ref={fileInput}
+          hidden
           aria-label="Choose local music"
           type="file"
           accept="audio/*"
@@ -191,10 +202,10 @@ export default function Music() {
             e.target.value = "";
           }}
         />
-      </label>
+      </div>
       <p className="muted">
-        Two original instrumental loops made for this workspace. Your files stay
-        in your browser. Music keeps playing when minimized and stops when you
+        Your personal music collection. Files selected from your device stay in
+        your browser. Music keeps playing when minimized and stops when you
         close this window.
       </p>
     </div>
