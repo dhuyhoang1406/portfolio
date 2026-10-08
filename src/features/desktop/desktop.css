@@ -1797,3 +1797,7 @@
 .wallpaper-signature span {
   text-align: left;
 }
+/* Keep the compact monitor layout focused on application shortcuts. */
+.desktop.embedded .desktop-widget {
+  display: none;
+}
