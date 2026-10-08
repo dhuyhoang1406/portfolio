@@ -218,13 +218,13 @@ export default function Desktop({
       <div className="wallpaper" aria-hidden="true">
         <div className="wallpaper-orbit" />
         <div className="wallpaper-copy">
-          <span className="wallpaper-label">A SPACE FOR IDEAS</span>
+          <span className="wallpaper-label">HOANG’S PERSONAL WORKSPACE</span>
           <h2>
-            Think.
+            Make
             <br />
-            Build.
+            it
             <br />
-            <i>Repeat.</i>
+            <i>matter.</i>
           </h2>
           <span className="wallpaper-coordinate">JAVASCRIPT / TYPESCRIPT</span>
         </div>
@@ -232,6 +232,28 @@ export default function Desktop({
           {profile.name.toUpperCase()} <span>{profile.role.toUpperCase()}</span>
         </div>
       </div>
+      <aside className="desktop-widget">
+        <span className="eyebrow">OFF THE CLOCK</span>
+        <strong>
+          A little room
+          <br />
+          for curiosity.
+        </strong>
+        <button onClick={() => open("Music")}>
+          <AppIcon id="Music" />
+          <span>
+            Workspace radio<small>Two original ambient tracks</small>
+          </span>
+          <b>↗</b>
+        </button>
+        <button onClick={() => open("Arcade")}>
+          <AppIcon id="Arcade" />
+          <span>
+            Memory club<small>A quick play break</small>
+          </span>
+          <b>↗</b>
+        </button>
+      </aside>
       {themeOpen && (
         <ThemePanel
           value={appearance}

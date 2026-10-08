@@ -118,3 +118,13 @@ Visually inspected desktop room, focused monitor, full-screen 2D and a 390×844 
 Pushes to `gh-pages` run `.github/workflows/deploy.yml`: install locked dependencies, lint, build, and deploy `dist`. Repository Settings → Pages → Source must be **GitHub Actions**. The production base is `/portfolio/`; local development stays at `/`. Source `index.html` requires Vite and must not be served directly by Pages.
 
 To check the production build locally, run `npm run build` and `npm run preview`, then open `http://localhost:4173/portfolio/`. Browser checks accept `BASE_URL=http://localhost:4173/portfolio`.
+
+## Workspace apps and content
+
+Portfolio copy is grounded in the supplied CV and original profile: internship responsibilities, project contributions, education, scholarships and TOEIC. `src/data/profile.ts` owns the content; no unverified demos or project screenshots are shown. Project artwork is original CSS illustration.
+
+`Music.tsx` plays two original, programmatically synthesized 24-second ambient loops in `public/music/` (no third-party audio). Playback requires a user click, supports seek/volume/track selection and local audio files, continues while minimized, and stops on window close. Local files use temporary browser object URLs and are never uploaded. Audio is fetched only when Music is opened. To add tracks, put audio files in `public/music/` and update the registry in `Music.tsx`.
+
+`Arcade.tsx` is an original six-pair memory game with shuffled cards, move count, matches and reset. It works with pointer and keyboard input and clears pending timers when closed. Record animation and hover movement respect reduced-motion preferences.
+
+Run `node tests/leisure-check.mjs` (optional `BASE_URL`) to verify manual music playback, minimized playback, track switching, local audio, window-close cleanup, game reset, richer content and mobile controls. Existing browser and scrollbar regression scripts still cover the 3D screen.

@@ -30,6 +30,19 @@ export default function AppIcon({ id }: { id: AppId | "Theme" | "Launcher" }) {
         <path d="m3 7 9 7 9-7" />
       </>
     ),
+    Music: (
+      <>
+        <path d="M9 17V5l11-2v12M9 8l11-2" />
+        <circle cx="6" cy="18" r="3" />
+        <circle cx="17" cy="16" r="3" />
+      </>
+    ),
+    Arcade: (
+      <>
+        <rect x="3" y="6" width="18" height="13" rx="5" />
+        <path d="M7 10v5m-2-2.5h4M16 11h.01M18 14h.01" />
+      </>
+    ),
     Theme: (
       <>
         <circle cx="12" cy="12" r="9" />

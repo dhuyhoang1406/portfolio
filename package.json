@@ -10,7 +10,8 @@
     "lint": "eslint src",
     "preview": "vite preview --host 0.0.0.0",
     "test:browser": "node tests/browser-check.mjs",
-    "test:scroll": "node tests/scroll-regression.mjs"
+    "test:scroll": "node tests/scroll-regression.mjs",
+    "test:leisure": "node tests/leisure-check.mjs"
   },
   "dependencies": {
     "@react-three/drei": "^10.0.0",
