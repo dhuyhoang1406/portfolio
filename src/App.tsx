@@ -54,7 +54,8 @@ export default function App() {
   }, [busy]);
   useEffect(() => {
     function key(e: KeyboardEvent) {
-      if (e.key === "Escape" && !busy) setActive(false);
+      if (e.key === "Escape" && !busy && !document.fullscreenElement)
+        setActive(false);
     }
     window.addEventListener("keydown", key);
     const q = matchMedia("(max-width: 760px)");
