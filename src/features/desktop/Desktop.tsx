@@ -7,11 +7,13 @@ import type { AppId } from "./apps";
 import AppIcon from "./AppIcon";
 import AppContent from "./AppContent";
 import ScrollArea from "./ScrollArea";
+import WindowNavigation from "./WindowNavigation";
 import ThemePanel from "./ThemePanel";
 import { appearanceKey, readAppearance } from "./themes";
 import type { Appearance } from "./themes";
 import type { CSSProperties } from "react";
 import "./desktop.css";
+import "./os-shell.css";
 type Win = {
   id: AppId;
   x: number;
@@ -19,6 +21,8 @@ type Win = {
   z: number;
   min: boolean;
   max?: boolean;
+  width?: number;
+  height?: number;
 };
 export default function Desktop({
   embedded = false,
@@ -32,6 +36,16 @@ export default function Desktop({
   const [appearance, setAppearance] = useState(readAppearance);
   const [themeOpen, setThemeOpen] = useState(false);
   const [launcherOpen, setLauncherOpen] = useState(false);
+  const [search, setSearch] = useState("");
+  const [clock, setClock] = useState(() => new Date());
+  useEffect(() => {
+    const timer = setInterval(() => setClock(new Date()), 1000 * 30);
+    return () => clearInterval(timer);
+  }, []);
+  function showDesktop() {
+    setWindows((ws) => ws.map((w) => ({ ...w, min: true })));
+  }
+
   const themeButton = useRef<HTMLButtonElement>(null);
   const launcherButton = useRef<HTMLButtonElement>(null);
   function changeAppearance(value: Appearance) {
@@ -57,23 +71,59 @@ export default function Desktop({
     y: number;
     scale: number;
   } | null>(null);
+  const resize = useRef<{
+    id: AppId;
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+    scale: number;
+  } | null>(null);
+  function resizeWindow(id: AppId, width: number, height: number) {
+    const el = root.current;
+    if (!el) return;
+    setWindows((ws) =>
+      ws.map((w) =>
+        w.id === id
+          ? clamp({
+              ...w,
+              width: Math.min(Math.max(360, width), el.clientWidth - 24),
+              height: Math.min(Math.max(270, height), el.clientHeight - 132),
+            })
+          : w,
+      ),
+    );
+  }
   function clamp(w: Win) {
     const el = root.current;
     if (!el) return w;
     return {
       ...w,
+      width:
+        w.width === undefined
+          ? undefined
+          : Math.min(w.width, el.clientWidth - 24),
+      height:
+        w.height === undefined
+          ? undefined
+          : Math.min(w.height, el.clientHeight - 132),
       x: Math.max(
         0,
         Math.min(
           w.x,
-          Math.max(0, el.clientWidth - Math.min(590, el.clientWidth - 24)),
+          Math.max(
+            0,
+            el.clientWidth - Math.min(w.width ?? 590, el.clientWidth - 24),
+          ),
         ),
       ),
       y: Math.max(
         44,
         Math.min(
           w.y,
-          el.clientHeight - Math.min(490, el.clientHeight - 132) - 64,
+          el.clientHeight -
+            Math.min(w.height ?? 490, el.clientHeight - 132) -
+            64,
         ),
       ),
     };
@@ -102,6 +152,7 @@ export default function Desktop({
       ...ws,
       clamp({
         id,
+        max: id === "Arcade",
         x: 180 + ws.length * 20,
         y: 65 + ws.length * 20,
         z,
@@ -189,9 +240,9 @@ export default function Desktop({
         <div className="os-brand">
           <span className="os-mark">h.</span>
           <strong>
-            hoang<span>workspace</span>
+            hoang<span>OS</span>
           </strong>
-          <span className="workspace-tag">PERSONAL / 01</span>
+          <span className="workspace-tag">PERSONAL COMPUTER</span>
         </div>
         <div className="desktop-top-actions">
           <span className="desktop-location">
@@ -220,11 +271,7 @@ export default function Desktop({
         <div className="wallpaper-copy">
           <span className="wallpaper-label">HOANG’S PERSONAL WORKSPACE</span>
           <h2>
-            Make
-            <br />
-            it
-            <br />
-            <i>matter.</i>
+            hoang<span className="wallpaper-os"> OS</span>
           </h2>
           <span className="wallpaper-coordinate">JAVASCRIPT / TYPESCRIPT</span>
         </div>
@@ -242,14 +289,14 @@ export default function Desktop({
         <button onClick={() => open("Music")}>
           <AppIcon id="Music" />
           <span>
-            Workspace radio<small>Two original ambient tracks</small>
+            Workspace radio<small>My personal playlist</small>
           </span>
           <b>↗</b>
         </button>
         <button onClick={() => open("Arcade")}>
           <AppIcon id="Arcade" />
           <span>
-            Memory club<small>A quick play break</small>
+            Game library<small>Celeste Classic</small>
           </span>
           <b>↗</b>
         </button>
@@ -284,7 +331,13 @@ export default function Desktop({
             hidden={w.min}
             className={`window ${focused === w.id ? "window-active" : ""} ${w.max ? "window-maximized" : ""}`}
             aria-label={w.id}
-            style={{ left: w.x, top: w.y, zIndex: w.z }}
+            style={{
+              left: w.x,
+              top: w.y,
+              zIndex: w.z,
+              width: w.max ? undefined : w.width,
+              height: w.max ? undefined : w.height,
+            }}
             onPointerDown={() => front(w.id)}
             onFocusCapture={() => {
               if (focused !== w.id) front(w.id);
@@ -365,9 +418,109 @@ export default function Desktop({
                 </button>
               </div>
             </header>
-            <ScrollArea label={w.id}>
-              <AppContent id={w.id} onOpen={open} />
-            </ScrollArea>
+            <WindowNavigation
+              id={w.id}
+              onOpen={open}
+              onAppearance={() => setThemeOpen(true)}
+            />
+            <div
+              className={`window-workspace ${w.id === "Music" || w.id === "Arcade" ? "window-media-workspace" : ""}`}
+            >
+              {w.id !== "Music" && w.id !== "Arcade" && (
+                <nav
+                  className="explorer-sidebar"
+                  aria-label={`${w.id} portfolio navigation`}
+                >
+                  <span>PORTFOLIO</span>
+                  {apps
+                    .filter((a) => a.id !== "Music" && a.id !== "Arcade")
+                    .map((a) => (
+                      <button
+                        key={a.id}
+                        aria-current={a.id === w.id ? "page" : undefined}
+                        onClick={() => open(a.id)}
+                      >
+                        <AppIcon id={a.id} />
+                        {a.short}
+                      </button>
+                    ))}
+                  <div>
+                    <span>QUICK LINKS</span>
+                    <button onClick={() => open("Music")}>
+                      <AppIcon id="Music" />
+                      Music
+                    </button>
+                    <button onClick={() => open("Arcade")}>
+                      <AppIcon id="Arcade" />
+                      Games
+                    </button>
+                  </div>
+                </nav>
+              )}
+              <ScrollArea label={w.id}>
+                <AppContent id={w.id} onOpen={open} />
+              </ScrollArea>
+            </div>
+            {!w.max && (
+              <button
+                className="window-resizer"
+                aria-label={`Resize ${w.id} window with arrow keys`}
+                onKeyDown={(e) => {
+                  const directions: Record<string, [number, number]> = {
+                    ArrowLeft: [-20, 0],
+                    ArrowRight: [20, 0],
+                    ArrowUp: [0, -20],
+                    ArrowDown: [0, 20],
+                  };
+                  const d = directions[e.key];
+                  if (!d) return;
+                  e.preventDefault();
+                  e.stopPropagation();
+                  resizeWindow(
+                    w.id,
+                    (w.width ?? 590) + d[0],
+                    (w.height ??
+                      Math.min(490, root.current!.clientHeight - 132)) + d[1],
+                  );
+                }}
+                onPointerDown={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  front(w.id);
+                  const section = e.currentTarget.closest(
+                    ".window",
+                  ) as HTMLElement;
+                  resize.current = {
+                    id: w.id,
+                    x: e.clientX,
+                    y: e.clientY,
+                    width: section.offsetWidth,
+                    height: section.offsetHeight,
+                    scale:
+                      root.current!.getBoundingClientRect().width /
+                      root.current!.clientWidth,
+                  };
+                  e.currentTarget.setPointerCapture(e.pointerId);
+                }}
+                onPointerMove={(e) => {
+                  const r = resize.current;
+                  if (r)
+                    resizeWindow(
+                      r.id,
+                      r.width + (e.clientX - r.x) / r.scale,
+                      r.height + (e.clientY - r.y) / r.scale,
+                    );
+                }}
+                onPointerUp={() => {
+                  resize.current = null;
+                }}
+                onLostPointerCapture={() => {
+                  resize.current = null;
+                }}
+              >
+                ◢
+              </button>
+            )}
             <footer className="window-footer">
               <span>workspace / {w.id.toLowerCase()}</span>
               <span>◌ Personal portfolio</span>
@@ -388,24 +541,61 @@ export default function Desktop({
               <small>{profile.role}</small>
             </div>
           </header>
-          <span className="eyebrow">YOUR WORKSPACE</span>
-          {apps.map((a) => (
+          <label className="launcher-search">
+            <span className="sr-only">Search applications</span>
+            <input
+              aria-label="Search applications"
+              placeholder="Search applications…"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+          </label>
+          <span className="eyebrow">APPLICATIONS</span>
+          {apps
+            .filter((a) =>
+              `${a.id} ${a.subtitle}`
+                .toLowerCase()
+                .includes(search.toLowerCase()),
+            )
+            .map((a) => (
+              <button
+                key={a.id}
+                aria-label={`Launch ${a.id}`}
+                onClick={() => open(a.id)}
+              >
+                <span className="launcher-icon">
+                  <AppIcon id={a.id} />
+                </span>
+                <span>
+                  <strong>{a.id}</strong>
+                  <small>{a.subtitle}</small>
+                </span>
+                <span>↗</span>
+              </button>
+            ))}
+          {!apps.some((a) =>
+            `${a.id} ${a.subtitle}`
+              .toLowerCase()
+              .includes(search.toLowerCase()),
+          ) && <p className="launcher-empty">No applications found.</p>}
+          <footer>
             <button
-              key={a.id}
-              aria-label={`Launch ${a.id}`}
-              onClick={() => open(a.id)}
+              onClick={() => {
+                showDesktop();
+                setLauncherOpen(false);
+              }}
             >
-              <span className="launcher-icon">
-                <AppIcon id={a.id} />
-              </span>
-              <span>
-                <strong>{a.id}</strong>
-                <small>{a.subtitle}</small>
-              </span>
-              <span>↗</span>
+              ▤ Show desktop
             </button>
-          ))}
-          <footer>Make something worth making.</footer>
+            <button
+              onClick={() => {
+                setThemeOpen(true);
+                setLauncherOpen(false);
+              }}
+            >
+              ⚙ Settings
+            </button>
+          </footer>
         </div>
       )}
       <footer className="taskbar">
@@ -420,7 +610,7 @@ export default function Desktop({
           }}
         >
           <AppIcon id="Launcher" />
-          <span>Workspace</span>
+          <span>Start</span>
         </button>
         <div className="taskbar-divider" />
         <div className="tasks">
@@ -448,9 +638,29 @@ export default function Desktop({
             </button>
           ))}
         </div>
-        <span className="tray">
-          <i /> Local workspace <span>H / OS</span>
-        </span>
+        <div className="tray">
+          <i />
+          <span className="tray-system">HOANG OS</span>
+          <time dateTime={clock.toISOString()}>
+            {clock.toLocaleTimeString("en-GB", {
+              hour: "2-digit",
+              minute: "2-digit",
+            })}
+            <small>
+              {clock.toLocaleDateString("en-GB", {
+                day: "2-digit",
+                month: "2-digit",
+              })}
+            </small>
+          </time>
+          <button
+            className="show-desktop"
+            aria-label="Show desktop"
+            onClick={showDesktop}
+          >
+            ▯
+          </button>
+        </div>
       </footer>
     </div>
   );
