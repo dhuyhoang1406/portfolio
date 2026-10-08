@@ -2,6 +2,67 @@ export const profile = {
   name: "Dang Huy Hoang",
   role: "Full-stack Developer",
   bio: "I build thoughtful interfaces and the systems behind them. My main ecosystem is JavaScript and TypeScript, from React applications to NestJS APIs.",
+  summary:
+    "Early-career Fullstack Engineer with two internships, building React and Next.js interfaces connected to NestJS REST APIs. My project work spans inventory concurrency, Redis caching, relational data modeling and automated CI checks.",
+  educationDetails: {
+    degree: "Bachelor of Science in Software Engineering",
+    period: "Sep 2022 – Present",
+    gpa: "3.66 / 4.00",
+    scholarships: "Academic Merit Scholarships · 4 semesters (2022–2025)",
+    english: "TOEIC Listening & Reading · 705 / 990 · Aug 2025",
+  },
+  skillGroups: [
+    {
+      title: "Interfaces",
+      note: "Responsive web experiences and connected mobile applications.",
+      tools: [
+        "React",
+        "Next.js",
+        "Redux Toolkit",
+        "Tailwind CSS",
+        "HTML5 / CSS3",
+        "React Native / Expo",
+        "Flutter",
+      ],
+    },
+    {
+      title: "Services",
+      note: "REST APIs, authentication, real-time communication and clear service boundaries.",
+      tools: [
+        "JavaScript / TypeScript",
+        "C#",
+        "Node.js / NestJS",
+        "ASP.NET Core (.NET 8)",
+        "JWT",
+        "Socket.IO",
+        "Prisma",
+      ],
+    },
+    {
+      title: "Data",
+      note: "Relational models, graph relationships and caching.",
+      tools: [
+        "PostgreSQL / PostGIS",
+        "SQL Server",
+        "MySQL",
+        "MongoDB",
+        "Neo4j",
+        "Redis",
+      ],
+    },
+    {
+      title: "Delivery",
+      note: "Repeatable environments and automated checks before shipping.",
+      tools: [
+        "Git / GitHub",
+        "Docker / Docker Compose",
+        "GitHub Actions",
+        "Integration Testing",
+        "Postman",
+        "Linux",
+      ],
+    },
+  ],
   githubHandle: "dhuyhoang1406",
   experience: [
     {
@@ -9,14 +70,14 @@ export const profile = {
       role: "Backend Developer Intern",
       period: "Aug 2026 – Present",
       description:
-        "Exploring backend architecture and supporting assigned development tasks.",
+        "Explored company system infrastructure and backend architecture to understand how components and environments work together. Supported assigned backend tasks while learning the existing codebase and development workflow.",
     },
     {
       company: "Best HR Solution",
       role: "Fullstack Engineer Intern",
       period: "May – Jul 2026",
       description:
-        "React, Next.js and NestJS features for an AI recruitment platform.",
+        "Built React, Next.js and NestJS features for an AI recruitment platform supporting JD/CV standardization and candidate–job matching. Translated requirements into responsive interfaces connected to REST APIs, tested endpoints with Postman and collaborated through Git/GitHub workflows.",
     },
   ],
   location: "Ho Chi Minh City, Vietnam",
@@ -45,6 +106,19 @@ export const profile = {
   projects: [
     {
       name: "HeritaHub",
+      period: "Feb – Apr 2025",
+      team: "Team of 5",
+      highlight: "Top 10 · WebDev Studios",
+      details: [
+        "Built NestJS REST APIs and database schemas for profiles, chat and heritage sites.",
+        "Integrated the React Native application with Socket.IO messaging and map-based discovery.",
+        "Modeled heritage-site relationships in Neo4j for graph-based recommendation queries.",
+      ],
+      architecture: [
+        "React Native + Expo",
+        "NestJS + Socket.IO",
+        "MySQL + Neo4j",
+      ],
       category: "MOBILE · CULTURAL HERITAGE",
       description:
         "A social platform for cultural heritage with real-time chat and maps. NestJS APIs connect a React Native app, with Neo4j supporting heritage relationship queries.",
@@ -52,6 +126,19 @@ export const profile = {
     },
     {
       name: "EC Project",
+      period: "Sep – Dec 2025",
+      team: "Team of 6",
+      highlight: "Inventory concurrency control",
+      details: [
+        "Connected customer and admin React workflows to .NET 8 REST APIs backed by SQL Server.",
+        "Implemented optimistic locking to guard inventory updates against concurrent overselling.",
+        "Built a Node.js chatbot with Gemini API and Redis caching to reuse responses and reduce redundant external requests.",
+      ],
+      architecture: [
+        "React + Redux Toolkit",
+        ".NET 8 REST API",
+        "SQL Server / Redis",
+      ],
       category: "WEB · COMMERCE",
       description:
         "Customer and admin shopping workflows backed by .NET 8 REST APIs. Optimistic locking protects inventory from concurrent overselling.",
@@ -59,6 +146,19 @@ export const profile = {
     },
     {
       name: "LifeHelper",
+      period: "Aug 2026 – Present",
+      team: "Personal project",
+      highlight: "6 services · In development",
+      details: [
+        "Designed separate service and database ownership for identity, productivity, AI, documents, notifications and analytics.",
+        "Built the backend foundation with Clean Architecture, repository abstractions, Prisma migrations, PostgreSQL and Redis.",
+        "Automated lint, type checks, tests, Prisma validation and builds with GitHub Actions; integrated Codex pull-request reviews.",
+      ],
+      architecture: [
+        "6 service boundaries",
+        "NestJS + Prisma",
+        "PostgreSQL + Redis",
+      ],
       category: "BACKEND · PERSONAL AI ASSISTANT",
       description:
         "A personal AI assistant project in development. Implemented a NestJS backend foundation with separate service databases, Clean Architecture, Prisma, Redis and integration testing.",

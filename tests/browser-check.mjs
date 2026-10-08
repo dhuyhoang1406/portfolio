@@ -9,7 +9,10 @@ const browser = await chromium.launch({
     "--enable-unsafe-swiftshader",
   ],
 });
-const base = (process.env.BASE_URL || "http://localhost:5173").replace(/\/$/, "");
+const base = (process.env.BASE_URL || "http://localhost:5173").replace(
+  /\/$/,
+  "",
+);
 const errors = [];
 const page = await browser.newPage({ viewport: { width: 1440, height: 1000 } });
 page.on("pageerror", (e) => errors.push(e.message));
@@ -160,7 +163,12 @@ await expect(
 ).toBeVisible();
 await page.screenshot({ path: "/tmp/hoang-2d.png" });
 await page.getByRole("button", { name: "Open Skills" }).click();
-await expect(page.getByText("TypeScript", { exact: true })).toBeVisible();
+await page
+  .getByText("JavaScript / TypeScript", { exact: true })
+  .scrollIntoViewIfNeeded();
+await expect(
+  page.getByText("JavaScript / TypeScript", { exact: true }),
+).toBeVisible();
 await page.getByRole("button", { name: "Close Skills" }).click();
 await page.getByRole("button", { name: "Open Resume" }).click();
 await expect(
