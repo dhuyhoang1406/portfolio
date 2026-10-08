@@ -1,6 +1,6 @@
 # Dang Huy Hoang — Personal workspace
 
-A frontend portfolio built with Vite, React, TypeScript, React Three Fiber and Drei. The original room model is preserved. Click anywhere on the room model to approach the React desktop, then open About Me, Projects, Skills, Resume or Contact. Use **Back to room** or Escape to return. No deployment has been performed.
+A frontend portfolio built with Vite, React, TypeScript, React Three Fiber and Drei. The original room model is preserved. Click anywhere on the room model to approach the React desktop, then open About Me, Projects, Skills, Resume or Contact. Use **Back to room** or Escape to return. Production deployment uses GitHub Actions. Commit/push changes only when explicitly requested.
 
 ## Run locally
 
@@ -55,7 +55,7 @@ Root files are project configuration, entry HTML and README. `node_modules/`, `d
 
 ## Desktop design and theming
 
-The desktop is an original **Hoang Workspace** design: a geometric wallpaper, custom SVG line icons, softly outlined windows, project cards and a floating taskbar. **Appearance** in the desktop header offers Paper, Midnight and Dusk plus a custom accent color. Choices persist in `localStorage` under `hoang-workspace-appearance`; unavailable storage falls back to the default without blocking the UI. Theme changes apply in both the 3D monitor and 2D/mobile desktop.
+The desktop is an original **Hoang OS** design: a blue orbital wallpaper, custom SVG icons, active titlebars, explorer navigation, project case studies and a system taskbar. **Appearance** in the desktop header offers Paper, Midnight and Dusk plus a custom accent color. Choices persist in `localStorage` under `hoang-workspace-appearance`; unavailable storage falls back to the default without blocking the UI. Theme changes apply in both the 3D monitor and 2D/mobile desktop.
 
 Desktop code is split by responsibility:
 
@@ -123,8 +123,12 @@ To check the production build locally, run `npm run build` and `npm run preview`
 
 Portfolio copy is grounded in the supplied CV and original profile: internship responsibilities, project contributions, education, scholarships and TOEIC. `src/data/profile.ts` owns the content; no unverified demos or project screenshots are shown. Project artwork is original CSS illustration.
 
-`Music.tsx` plays two original, programmatically synthesized 24-second ambient loops in `public/music/` (no third-party audio). Playback requires a user click, supports seek/volume/track selection and local audio files, continues while minimized, and stops on window close. Local files use temporary browser object URLs and are never uploaded. Audio is fetched only when Music is opened. To add tracks, put audio files in `public/music/` and update the registry in `Music.tsx`.
+`Music.tsx` plays the user-supplied MP3 collection in `public/music/`. The two synthesized loops have been removed. Titles and filenames are registered in `src/data/music.ts`. Playback requires a user click, supports seek/volume/track selection and local audio files, continues while minimized, and stops on window close. Local files use temporary browser object URLs and are never uploaded. Audio is fetched only when Music is opened. To add tracks, put audio files in `public/music/` and update `src/data/music.ts`.
 
-`Arcade.tsx` is an original six-pair memory game with shuffled cards, move count, matches and reset. It works with pointer and keyboard input and clears pending timers when closed. Record animation and hover movement respect reduced-motion preferences.
+`Arcade.tsx` embeds [Celeste Classic](https://maddymakesgamesinc.itch.io/celesteclassic), created by Maddy Thorson and Noel Berry, through its official itch.io embed-upload endpoint. No game source or assets are redistributed. Play creates the iframe, Restart reloads it, and Stop/close removes it. The 580×620 official embed wrapper is scaled to the window with ResizeObserver, including on mobile and the transformed monitor. The game needs internet and a keyboard; if the host fails, use the visible link to its official page. Cross-origin iframe load events cannot prove that every game asset loaded. `src/data/games.ts` owns the URL, native frame dimensions, controls and credits. To use your own game later, replace `embedUrl` with a hosted URL or a BASE_URL-prefixed path under `public/games/`, and update dimensions/metadata. Record animation and hover movement respect reduced-motion preferences.
 
-Run `node tests/leisure-check.mjs` (optional `BASE_URL`) to verify manual music playback, minimized playback, track switching, local audio, window-close cleanup, game reset, richer content and mobile controls. Existing browser and scrollbar regression scripts still cover the 3D screen.
+Run `node tests/leisure-check.mjs` (optional `BASE_URL`) to verify manual music playback, minimized playback, track switching, local audio, window-close cleanup, external game lazy loading, restart/stop, Start search, Show desktop, richer content and mobile controls. Existing browser and scrollbar regression scripts still cover the 3D screen.
+
+`os-shell.css` defines the current operating-system chrome: active titlebars, explorer menu/address bars, portfolio sidebar, searchable Start menu, taskbar clock and Show desktop. Windows support a scaled pointer resize handle and arrow-key resizing, with mobile using a fixed readable layout. Henry’s `Window`, `Toolbar`, `ShowcaseExplorer` and `MusicPlayer` were reviewed again for conventions; no source, branded icons or audio were copied.
+
+Arcade’s **Fullscreen game** button requests fullscreen for the local viewport, centers the fixed-size external embed and scales it to fit both viewport dimensions. The embedded host’s fullscreen permission is disabled because its legacy layout does not center itself. Exit with the overlay button or Escape. The external PICO-8 player only offers its own Sound mute/unmute button; there is no supported cross-origin volume API, so the portfolio does not present a nonfunctional volume slider for the game.
